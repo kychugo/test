@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wabi-Sabi HTML Canvas</title>
+    <style>
+        /* Typography */
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@200;400&display=swap');
+
+        /* Color Palette & Variables */
+        :root {
+            --bg-base: #f4f0e6;       /* Warm linen */
+            --bg-surface: #e9e4d8;    /* Darker linen */
+            --bg-canvas: #fcfbf9;     /* Off-white paper */
+            --text-main: #4a453e;     /* Deep taupe */
+            --text-muted: #7d7568;    /* Muted earth */
+            --accent: #7c836a;        /* Faded olive green */
+            --accent-hover: #656b55;
+            --border: #d4cfc1;
+            --radius-soft: 4px;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: var(--bg-base);
+            /* Subtle noise texture for an imperfect, organic feel */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        /* Layout */
+        main {
+            display: flex;
+            flex: 1;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 0; /* Prevents flex blowout */
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-soft);
+            padding: 1.5rem;
+            text-align: center;
+            background-color: var(--bg-surface);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .upload-area.dragover {
+            background-color: #dfd9cc;
+            border-color: var(--accent);
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .upload-btn {
+            font-family: 'Cormorant Garamond', serif;
+            background: none;
+            border: none;
+            color: var(--accent);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .upload-area p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Editor */
+        .editor-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        textarea {
+            flex: 1;
+            width: 100%;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-soft);
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+        }
+
+        textarea::placeholder {
+            color: #a39c8e;
+            font-style: italic;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        button {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            padding: 0.6rem 2rem;
+            border: none;
+            border-radius: var(--radius-soft);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--bg-base);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-surface);
+        }
+
+        /* Output Canvas */
+        .canvas-wrapper {
+            flex: 1;
+            background-color: var(--bg-canvas);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-soft);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+            overflow: hidden;
+            display: flex;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Scrollbar styling for editor */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: var(--bg-surface);
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background-color: var(--border);
+            border-radius: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            main { flex-direction: column; height: auto; gap: 1rem; }
+            .editor-wrapper { min-height: 400px; }
+            .canvas-wrapper { min-height: 500px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>HTML Canvas</h1>
+        <p>Embrace the beauty of raw, imperfect markup.</p>
+    </header>
+
+    <main>
+        <!-- Left Column: Input -->
+        <div class="column">
+            
+            <div class="upload-area" id="drop-zone">
+                <input type="file" id="file-input" accept=".html,.txt">
+                <label for="file-input" class="upload-btn">Select an HTML file</label>
+                <p>or drag and drop it here</p>
+            </div>
+
+            <div class="editor-wrapper">
+                <textarea id="html-editor" placeholder="Type or paste your essence here..."></textarea>
+            </div>
+
+            <div class="controls">
+                <button class="btn-primary" id="btn-run">Render Output</button>
+                <button class="btn-secondary" id="btn-clear">Clear</button>
+            </div>
+        </div>
+
+        <!-- Right Column: Output -->
+        <div class="column">
+            <div class="canvas-wrapper">
+                <iframe id="output-frame" title="Rendered HTML Output"></iframe>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Copyright © 2026 Hugo Wong. All rights reserved</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const editor = document.getElementById('html-editor');
+            const iframe = document.getElementById('output-frame');
+            const btnRun = document.getElementById('btn-run');
+            const btnClear = document.getElementById('btn-clear');
+            const fileInput = document.getElementById('file-input');
+            const dropZone = document.getElementById('drop-zone');
+
+            // Function to render HTML from editor to iframe
+            const renderHTML = () => {
+                const code = editor.value;
+                const iframeDoc = iframe.contentWindow.document;
+                
+                iframeDoc.open();
+                iframeDoc.write(code);
+                iframeDoc.close();
+            };
+
+            // Initial render
+            renderHTML();
+
+            // Button Event Listeners
+            btnRun.addEventListener('click', renderHTML);
+
+            btnClear.addEventListener('click', () => {
+                editor.value = '';
+                renderHTML();
+                editor.focus();
+            });
+
+            // Handle File Upload via Input
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    readFile(file);
+                }
+            });
+
+            // Handle Drag and Drop
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.name.endsWith('.html') || file.type === 'text/html' || file.type === 'text/plain') {
+                        readFile(file);
+                    } else {
+                        alert("Please drop a valid HTML or text file.");
+                    }
+                }
+            });
+
+            // Helper function to read file content
+            const readFile = (file) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    editor.value = event.target.result;
+                    renderHTML();
+                };
+                reader.onerror = () => {
+                    alert("Error reading the file.");
+                };
+                reader.readAsText(file);
+            };
+
+            // Optional: Auto-render on typing (debounce could be added, but manual run fits wabi-sabi deliberation better. Left manual via button).
+        });
+    </script>
+</body>
+</html>
