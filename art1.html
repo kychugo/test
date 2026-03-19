@@ -3,115 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE_ART // Integrated Platform</title>
+    <title>CODE_ART_OS // v2.0</title>
     <style>
-        :root {
-            --bg: #0a0a0c;
-            --panel: #16161a;
-            --accent: #00ff9d;
-            --text: #e0e0e0;
-            --code-bg: #1e1e24;
-            --border: #333;
-        }
-
-        body, html {
-            margin: 0; padding: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Courier New', Courier, monospace;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        #app {
-            display: grid;
-            grid-template-columns: 250px 1fr 350px;
-            grid-template-rows: 1fr 200px;
-            height: 100vh;
-            gap: 2px;
-            background: var(--border);
-        }
-
-        /* Sidebar */
-        aside {
-            grid-row: 1 / 3;
-            background: var(--panel);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        h1 { font-size: 1.2rem; color: var(--accent); margin-bottom: 20px; border-bottom: 1px solid var(--accent); padding-bottom: 10px; }
+        :root { --bg: #050505; --panel: #111115; --accent: #00ff9d; --text: #d0d0d0; --border: #222; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Consolas', 'Monaco', monospace; height: 100vh; overflow: hidden; }
+        #app { display: grid; grid-template-columns: 300px 1fr 400px; grid-template-rows: 1fr 250px; height: 100vh; gap: 4px; background: #000; }
         
-        .nav-item {
-            padding: 10px;
-            margin-bottom: 5px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .nav-item:hover { background: #222; border-color: var(--accent); }
-        .nav-item.active { background: var(--accent); color: black; font-weight: bold; }
+        /* Sidebar */
+        aside { grid-row: 1 / 3; background: var(--panel); display: flex; flex-direction: column; border-right: 1px solid var(--border); overflow-y: auto; }
+        .header { padding: 20px; border-bottom: 1px solid var(--border); background: #1a1a20; }
+        .header h1 { font-size: 1.1rem; color: var(--accent); margin: 0; }
+        .nav-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #1a1a1a; transition: 0.2s; font-size: 13px; display: flex; justify-content: space-between; }
+        .nav-item:hover { background: #222; color: var(--accent); }
+        .nav-item.active { background: var(--accent); color: #000; font-weight: bold; }
 
         /* Main Viewport */
-        main {
-            background: #000;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
+        main { background: #000; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        canvas { box-shadow: 0 0 50px rgba(0,255,157,0.05); }
 
-        canvas { max-width: 100%; max-height: 100%; }
+        /* Code/Meaning Panel */
+        #code-panel { grid-column: 3; grid-row: 1/3; background: #0c0c10; padding: 0; display: flex; flex-direction: column; border-left: 1px solid var(--border); }
+        .tab { padding: 10px 20px; background: #1a1a20; font-size: 12px; color: var(--accent); border-bottom: 1px solid var(--border); }
+        #meaning-box { padding: 20px; font-style: italic; border-bottom: 1px solid var(--border); color: #aaa; font-size: 14px; line-height: 1.6; }
+        #code-display { padding: 20px; font-size: 11px; overflow: auto; white-space: pre; color: #888; flex-grow: 1; }
 
-        /* Code Panel */
-        #code-panel {
-            grid-column: 3;
-            grid-row: 1 / 3;
-            background: var(--code-bg);
-            padding: 15px;
-            font-size: 12px;
-            overflow: auto;
-            white-space: pre-wrap;
-            border-left: 1px solid var(--border);
-        }
-
-        .code-header { color: var(--accent); margin-bottom: 10px; font-weight: bold; font-size: 14px; }
-
-        /* Console Panel */
-        #console {
-            grid-column: 2;
-            grid-row: 2;
-            background: var(--panel);
-            padding: 15px;
-            font-size: 12px;
-            overflow-y: auto;
-            color: #aaa;
-            border-top: 1px solid var(--border);
-        }
-
-        .log-entry { margin-bottom: 4px; border-left: 2px solid #444; padding-left: 8px; }
-        .log-info { color: #00d4ff; }
-
-        /* UI elements */
-        .badge {
-            font-size: 10px;
-            background: #444;
-            padding: 2px 5px;
-            border-radius: 3px;
-            margin-right: 5px;
-        }
+        /* Console */
+        #console { grid-column: 2; grid-row: 2; background: #000; padding: 15px; font-size: 12px; overflow-y: auto; color: #00ff41; border-top: 1px solid var(--border); position: relative; }
+        .log { margin-bottom: 4px; }
+        .log-sys { color: #555; }
+        .log-art { color: #fff; white-space: pre; font-size: 8px; line-height: 8px; margin: 10px 0; }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <aside id="sidebar">
-        <h1>ART_OF_CODE v1.0</h1>
+    <aside>
+        <div class="header">
+            <h1>CODE_ART_ARCHIVE</h1>
+            <small style="color: #666;">20 MODULES LOADED</small>
+        </div>
         <div id="menu"></div>
     </aside>
 
@@ -120,338 +50,178 @@
     </main>
 
     <div id="code-panel">
-        <div class="code-header">// SOURCE_CODE</div>
+        <div class="tab">PHILOSOPHY // 哲學意義</div>
+        <div id="meaning-box"></div>
+        <div class="tab">SOURCE_CODE // 源代碼</div>
         <code id="code-display"></code>
     </div>
 
-    <div id="console">
-        <div class="log-entry log-info">System initialized. Select an exhibit to execute.</div>
-    </div>
+    <div id="console"></div>
 </div>
 
 <script>
-/** 
- * EXHIBITS DATABASE
- * Each exhibit contains metadata and a core execution function.
- */
 const Exhibits = [
-    {
-        name: "Matrix Rain",
-        description: "Classic digital rain simulation.",
-        code: function(ctx, w, h) {
-            const columns = Math.floor(w / 20);
-            const drops = Array(columns).fill(1);
-            return function draw() {
-                ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-                ctx.fillRect(0, 0, w, h);
-                ctx.fillStyle = "#0F0";
-                ctx.font = "15px monospace";
-                for(let i = 0; i < drops.length; i++) {
-                    const text = String.fromCharCode(0x30A0 + Math.random() * 96);
-                    ctx.fillText(text, i * 20, drops[i] * 20);
-                    if(drops[i] * 20 > h && Math.random() > 0.975) drops[i] = 0;
-                    drops[i]++;
-                }
-            };
-        }
-    },
-    {
-        name: "Fractal Tree",
-        description: "Recursive branching algorithm.",
-        code: function(ctx, w, h) {
-            let angle = 0;
-            return function draw() {
-                ctx.fillStyle = "black";
-                ctx.fillRect(0, 0, w, h);
-                ctx.save();
-                ctx.strokeStyle = "#00ff9d";
-                ctx.translate(w/2, h);
-                angle = Math.sin(Date.now() * 0.001) * 0.5 + 0.5;
-                branch(100);
-                ctx.restore();
-
-                function branch(len) {
-                    ctx.beginPath();
-                    ctx.moveTo(0,0);
-                    ctx.lineTo(0, -len);
-                    ctx.stroke();
-                    ctx.translate(0, -len);
-                    if (len > 4) {
-                        ctx.save(); ctx.rotate(angle); branch(len * 0.67); ctx.restore();
-                        ctx.save(); ctx.rotate(-angle); branch(len * 0.67); ctx.restore();
-                    }
-                }
-            };
-        }
-    },
-    {
-        name: "Particle Swarm",
-        description: "Autonomous agents with friction and gravity.",
-        code: function(ctx, w, h) {
-            const pts = Array.from({length: 100}, () => ({
-                x: Math.random()*w, y: Math.random()*h,
-                vx: Math.random()*4-2, vy: Math.random()*4-2
-            }));
-            return function draw() {
-                ctx.fillStyle = "rgba(0,0,0,0.1)";
-                ctx.fillRect(0, 0, w, h);
-                ctx.fillStyle = "#fff";
-                pts.forEach(p => {
-                    p.x += p.vx; p.y += p.vy;
-                    if(p.x < 0 || p.x > w) p.vx *= -1;
-                    if(p.y < 0 || p.y > h) p.vy *= -1;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
-                    ctx.fill();
-                    // Connect lines
-                    pts.forEach(p2 => {
-                        let d = Math.hypot(p.x-p2.x, p.y-p2.y);
-                        if(d < 100) {
-                            ctx.strokeStyle = `rgba(0,255,157,${1 - d/100})`;
-                            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
-                        }
-                    });
-                });
-            };
-        }
-    },
-    {
-        name: "Mandelbrot Set",
-        description: "Visualizing the infinite boundary of complex numbers.",
-        code: function(ctx, w, h) {
-            const maxIter = 50;
-            const zoom = 200;
-            ctx.fillStyle = "black";
-            ctx.fillRect(0,0,w,h);
-            for(let x=0; x<w; x++) {
-                for(let y=0; y<h; y++) {
-                    let c_re = (x - w/2) / zoom;
-                    let c_im = (y - h/2) / zoom;
-                    let re = 0, im = 0;
-                    let iter = 0;
-                    while(re*re + im*im <= 4 && iter < maxIter) {
-                        let next_re = re*re - im*im + c_re;
-                        im = 2*re*im + c_im;
-                        re = next_re;
-                        iter++;
-                    }
-                    if(iter < maxIter) {
-                        ctx.fillStyle = `hsl(${iter * 5}, 100%, 50%)`;
-                        ctx.fillRect(x, y, 1, 1);
-                    }
-                }
-            }
-            return null; // Static render
-        }
-    },
-    {
-        name: "Game of Life",
-        description: "Conway's cellular automata.",
-        code: function(ctx, w, h) {
-            const res = 10;
-            const cols = Math.floor(w/res);
-            const rows = Math.floor(h/res);
-            let grid = Array.from({length: cols}, () => Array.from({length: rows}, () => Math.random() > 0.8 ? 1 : 0));
-            
-            return function draw() {
-                ctx.fillStyle = "#000"; ctx.fillRect(0,0,w,h);
-                let next = grid.map(arr => [...arr]);
-                for(let i=0; i<cols; i++) {
-                    for(let j=0; j<rows; j++) {
-                        let neighbors = 0;
-                        for(let x=-1; x<=1; x++) {
-                            for(let y=-1; y<=1; y++) {
-                                if(x===0 && y===0) continue;
-                                let ni = (i+x+cols)%cols;
-                                let nj = (j+y+rows)%rows;
-                                neighbors += grid[ni][nj];
-                            }
-                        }
-                        if(grid[i][j] === 1 && (neighbors < 2 || neighbors > 3)) next[i][j] = 0;
-                        else if(grid[i][j] === 0 && neighbors === 3) next[i][j] = 1;
-                        if(grid[i][j]) {
-                            ctx.fillStyle = "#00ff9d";
-                            ctx.fillRect(i*res, j*res, res-1, res-1);
-                        }
-                    }
-                }
-                grid = next;
-            };
-        }
-    },
-    {
-        name: "Sine Ribbon",
-        description: "Trigonometric interference patterns.",
-        code: function(ctx, w, h) {
-            let t = 0;
-            return function draw() {
-                ctx.fillStyle = "rgba(0,0,0,0.05)";
-                ctx.fillRect(0,0,w,h);
-                ctx.beginPath();
-                ctx.strokeStyle = `hsl(${t%360}, 100%, 50%)`;
-                for(let x=0; x<w; x++) {
-                    let y = h/2 + Math.sin(x*0.01 + t*0.05) * 100 * Math.sin(t*0.02);
-                    x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-                t++;
-            };
-        }
-    },
-    {
-        name: "Starfield",
-        description: "3D perspective projection simulation.",
-        code: function(ctx, w, h) {
-            const stars = Array.from({length: 400}, () => ({
-                x: Math.random()*w-w/2, y: Math.random()*h-h/2, z: Math.random()*w
-            }));
-            return function draw() {
-                ctx.fillStyle = "black"; ctx.fillRect(0,0,w,h);
-                ctx.fillStyle = "white";
-                stars.forEach(s => {
-                    s.z -= 5;
-                    if(s.z <= 0) s.z = w;
-                    let sx = (s.x / s.z) * (w/2) + w/2;
-                    let sy = (s.y / s.z) * (h/2) + h/2;
-                    let size = (1 - s.z/w) * 3;
-                    ctx.beginPath(); ctx.arc(sx, sy, size, 0, Math.PI*2); ctx.fill();
-                });
-            };
-        }
-    },
-    {
-        name: "Sorting Visual",
-        description: "Visualizing the chaos of a Bubble Sort.",
-        code: function(ctx, w, h) {
-            const count = 100;
-            const vals = Array.from({length: count}, () => Math.random() * h);
-            let i = 0, j = 0;
-            return function draw() {
-                ctx.fillStyle = "black"; ctx.fillRect(0,0,w,h);
-                for(let k=0; k<5; k++) { // Speed up logic
-                    if(i < vals.length) {
-                        if(vals[j] > vals[j+1]) [vals[j], vals[j+1]] = [vals[j+1], vals[j]];
-                        j++;
-                        if(j >= vals.length - i - 1) { j=0; i++; }
-                    }
-                }
-                vals.forEach((v, idx) => {
-                    ctx.fillStyle = idx === j ? "#ff0000" : "#00ff9d";
-                    ctx.fillRect(idx * (w/count), h-v, (w/count)-1, v);
-                });
-            };
-        }
-    },
-    {
-        name: "Attractor",
-        description: "Strange attractor - Chaos theory physics.",
-        code: function(ctx, w, h) {
-            let x = 0.1, y = 0, z = 0;
-            let a = 10, b = 28, c = 8/3;
-            ctx.fillStyle = "black"; ctx.fillRect(0,0,w,h);
-            return function draw() {
-                for(let i=0; i<20; i++) {
-                    let dx = a * (y - x);
-                    let dy = x * (b - z) - y;
-                    let dz = x * y - c * z;
-                    x += dx * 0.01; y += dy * 0.01; z += dz * 0.01;
-                    ctx.fillStyle = `hsl(${(z*5)%360}, 100%, 50%)`;
-                    ctx.fillRect(w/2 + x*10, h/2 + y*10, 1, 1);
-                }
-            };
-        }
-    },
-    {
-        name: "Geometric Web",
-        description: "Rotational symmetry and math art.",
-        code: function(ctx, w, h) {
-            let rotation = 0;
-            return function draw() {
-                ctx.fillStyle = "rgba(0,0,0,0.05)";
-                ctx.fillRect(0,0,w,h);
-                ctx.translate(w/2, h/2);
-                ctx.rotate(rotation);
-                for(let i=0; i<8; i++) {
-                    ctx.rotate(Math.PI/4);
-                    ctx.strokeStyle = "#00ff9d";
-                    ctx.strokeRect(Math.sin(rotation)*50, Math.cos(rotation)*50, 100, 100);
-                }
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
-                rotation += 0.01;
-            };
-        }
-    }
+    { name: "Matrix Rain", en: "Data is the rain that nourishes the digital soil.", hk: "數據係滋養數碼土地嘅雨水。", code: (ctx, w, h) => {
+        const cols = Math.floor(w/20); const drops = Array(cols).fill(1);
+        return () => { ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,w,h); ctx.fillStyle="#0F0"; ctx.font="15px monospace";
+        drops.forEach((y, i) => { const txt = String.fromCharCode(0x30A0 + Math.random()*96); ctx.fillText(txt, i*20, y*20);
+        if(y*20 > h && Math.random() > 0.975) drops[i]=0; drops[i]++; }); };
+    }},
+    { name: "Fractal Tree", en: "Infinite complexity from a single rule.", hk: "一個簡單規律演變出無限複雜。", code: (ctx, w, h) => {
+        let a = 0; return () => { ctx.fillStyle="black"; ctx.fillRect(0,0,w,h); ctx.save(); ctx.strokeStyle="#0f9"; ctx.translate(w/2, h); a = Math.sin(Date.now()*0.001)*0.8; 
+        const b = (l) => { ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-l); ctx.stroke(); ctx.translate(0,-l);
+        if(l>4){ ctx.save(); ctx.rotate(a); b(l*0.7); ctx.restore(); ctx.save(); ctx.rotate(-a); b(l*0.7); ctx.restore(); } }; b(100); ctx.restore(); };
+    }},
+    { name: "Particle Swarm", en: "Connections define our existence.", hk: "連結定義咗我哋嘅存在。", code: (ctx, w, h) => {
+        const p = Array.from({length:80},()=>({x:Math.random()*w, y:Math.random()*h, vx:Math.random()*2-1, vy:Math.random()*2-1}));
+        return () => { ctx.fillStyle="rgba(0,0,0,0.2)"; ctx.fillRect(0,0,w,h); p.forEach(i=>{
+            i.x+=i.vx; i.y+=i.vy; if(i.x<0||i.x>w)i.vx*=-1; if(i.y<0||i.y>h)i.vy*=-1;
+            p.forEach(j=>{ let d = Math.hypot(i.x-j.x, i.y-j.y); if(d<100){ctx.strokeStyle=`rgba(0,255,150,${1-d/100})`;ctx.beginPath();ctx.moveTo(i.x,i.y);ctx.lineTo(j.x,j.y);ctx.stroke();} });
+        }); };
+    }},
+    { name: "Mandelbrot", en: "The boundary of chaos is infinite.", hk: "混沌嘅邊界係無窮無盡。", code: (ctx, w, h) => {
+        for(let x=0;x<w;x++) { for(let y=0;y<h;y++){
+            let c_re=(x-w/1.5)/200, c_im=(y-h/2)/200, re=0, im=0, i=0;
+            while(re*re+im*im<=4 && i<40){ let n_re=re*re-im*im+c_re; im=2*re*im+c_im; re=n_re; i++; }
+            if(i<40){ctx.fillStyle=`hsl(${i*10},100%,50%)`; ctx.fillRect(x,y,1,1);}
+        }} return null;
+    }},
+    { name: "Game of Life", en: "Life emerges from simple interactions.", hk: "生命由簡單互動中湧現。", code: (ctx, w, h) => {
+        let r=10, c=Math.floor(w/r), rows=Math.floor(h/r), g=Array.from({length:c},()=>Array.from({length:rows},()=>Math.random()>0.8?1:0));
+        return () => { ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h); let n=g.map(a=>[...a]);
+        for(let i=0;i<c;i++) for(let j=0;j<rows;j++){
+            let nb=0; for(let x=-1;x<=1;x++) for(let y=-1;y<=1;y++) if(x!==0||y!==0) nb+=g[(i+x+c)%c][(j+y+rows)%rows];
+            if(g[i][j]&& (nb<2||nb>3)) n[i][j]=0; else if(!g[i][j]&&nb===3) n[i][j]=1;
+            if(g[i][j]){ctx.fillStyle="#0f9"; ctx.fillRect(i*r,j*r,r-1,r-1);}
+        } g=n; };
+    }},
+    { name: "Sine Ribbon", en: "Everything is a vibration.", hk: "萬物其實都係一種振動。", code: (ctx, w, h) => {
+        let t=0; return () => { ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,w,h); ctx.beginPath(); ctx.strokeStyle=`hsl(${t},100%,50%)`;
+        for(let x=0;x<w;x++){ let y=h/2+Math.sin(x*0.01+t*0.05)*100*Math.sin(t*0.01); x===0?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.stroke(); t++; };
+    }},
+    { name: "Starfield", en: "Moving forward through time.", hk: "向前望係穿越時空嘅唯一方法。", code: (ctx, w, h) => {
+        const s=Array.from({length:300},()=>({x:Math.random()*w-w/2,y:Math.random()*h-h/2,z:Math.random()*w}));
+        return () => { ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h); ctx.fillStyle="#fff"; s.forEach(p=>{
+            p.z-=4; if(p.z<=0)p.z=w; let sx=(p.x/p.z)*w+w/2, sy=(p.y/p.z)*h+h/2, sz=(1-p.z/w)*3; ctx.beginPath(); ctx.arc(sx,sy,sz,0,7); ctx.fill();
+        }); };
+    }},
+    { name: "Sorting Visual", en: "Order from entropy.", hk: "喺熵增入面尋找秩序。", code: (ctx, w, h) => {
+        let v=Array.from({length:100},()=>Math.random()*h), i=0, j=0;
+        return () => { ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h); for(let k=0;k<4;k++){if(i<v.length){if(v[j]>v[j+1])[v[j],v[j+1]]=[v[j+1],v[j]]; j++; if(j>=v.length-i-1){j=0;i++;}}}
+        v.forEach((x,idx)=>{ctx.fillStyle="#0f9"; ctx.fillRect(idx*(w/100),h-x,w/100-1,x);}); };
+    }},
+    { name: "Attractor", en: "Chaos is undecoded order.", hk: "混沌係未解碼嘅秩序。", code: (ctx, w, h) => {
+        let x=0.1,y=0,z=0,a=10,b=28,c=8/3; ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h);
+        return () => { for(let i=0;i<30;i++){ let dx=a*(y-x), dy=x*(b-z)-y, dz=x*y-c*z; x+=dx*0.01; y+=dy*0.01; z+=dz*0.01;
+        ctx.fillStyle=`hsl(${z*5},100%,50%)`; ctx.fillRect(w/2+x*10,h/2+y*10,1,1); } };
+    }},
+    { name: "Geometric Web", en: "Symmetry is the language of logic.", hk: "對稱係邏輯嘅視覺語言。", code: (ctx, w, h) => {
+        let r=0; return () => { ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,w,h); ctx.translate(w/2,h/2); ctx.rotate(r);
+        for(let i=0;i<8;i++){ ctx.rotate(Math.PI/4); ctx.strokeStyle="#0f9"; ctx.strokeRect(Math.sin(r)*50,Math.cos(r)*50,100,100); }
+        ctx.setTransform(1,0,0,1,0,0); r+=0.02; };
+    }},
+    { name: "Flow Field", en: "Invisible currents of the world.", hk: "隨住世間無形嘅潮流而動。", code: (ctx, w, h) => {
+        let p=Array.from({length:200},()=>({x:Math.random()*w,y:Math.random()*h}));
+        return () => { ctx.fillStyle="rgba(0,0,0,0.02)"; ctx.fillRect(0,0,w,h); ctx.strokeStyle="#0f9";
+        p.forEach(i=>{ let ang = (Math.sin(i.x*0.01)+Math.cos(i.y*0.01))*Math.PI; i.x+=Math.cos(ang)*2; i.y+=Math.sin(ang)*2;
+        if(i.x<0||i.x>w||i.y<0||i.y>h){i.x=Math.random()*w;i.y=Math.random()*h;} ctx.strokeRect(i.x,i.y,1,1); }); };
+    }},
+    { name: "Phyllotaxis", en: "The math of plant growth.", hk: "大自然遵循黃金比例去搵平衡。", code: (ctx, w, h) => {
+        let n=0, c=4; return () => { if(n>1000) return; for(let i=0;i<5;i++){ let a=n*137.5 * (Math.PI/180), r=c*Math.sqrt(n);
+        let x=r*Math.cos(a)+w/2, y=r*Math.sin(a)+h/2; ctx.fillStyle=`hsl(${n%360},100%,50%)`; ctx.beginPath(); ctx.arc(x,y,2,0,7); ctx.fill(); n++; } };
+    }},
+    { name: "Dragon Curve", en: "A line folding into complexity.", hk: "一條線摺疊成一隻複雜嘅怪獸。", code: (ctx, w, h) => {
+        let steps = [[w/3, h/2, w*0.7, h/2]]; ctx.strokeStyle="#0f9";
+        return () => { if(steps.length > 5000) return; ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h); 
+        steps.forEach(s=>{ ctx.beginPath(); ctx.moveTo(s[0],s[1]); ctx.lineTo(s[2],s[3]); ctx.stroke(); }); 
+        let next = []; steps.forEach(s=>{ let mx=(s[0]+s[2])/2 + (s[3]-s[1])/2, my=(s[1]+s[3])/2 - (s[2]-s[0])/2; next.push([s[0],s[1],mx,my],[s[2],s[3],mx,my]); }); steps=next; };
+    }},
+    { name: "Lissajous", en: "Harmony of frequencies.", hk: "兩種唔同頻率之間嘅和諧。", code: (ctx, w, h) => {
+        let t=0; return () => { ctx.fillStyle="rgba(0,0,0,0.02)"; ctx.fillRect(0,0,w,h); ctx.translate(w/2,h/2);
+        let x=Math.sin(t*2)*200, y=Math.cos(t*3)*200; ctx.fillStyle="#0f9"; ctx.fillRect(x,y,4,4); ctx.setTransform(1,0,0,1,0,0); t+=0.02; };
+    }},
+    { name: "ASCII Wave", en: "Text as a fluid medium.", hk: "就算係文字，都可以承載海洋嘅形狀。", code: (ctx, w, h) => {
+        let t=0; return () => { ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h); ctx.fillStyle="#0f9"; ctx.font="10px monospace";
+        for(let y=0; y<h; y+=15) for(let x=0; x<w; x+=10){ 
+            let d = Math.sin(x*0.01+t)*10 + Math.cos(y*0.01+t)*10;
+            ctx.fillText(d>0?"/":"\\", x, y+d);
+        } t+=0.05; };
+    }},
+    { name: "Boids", en: "Emergent collective intelligence.", hk: "個體嘅自由創造咗群體嘅智慧。", code: (ctx, w, h) => {
+        let b=Array.from({length:50},()=>({x:Math.random()*w,y:Math.random()*h,vX:Math.random()*2-1,vY:Math.random()*2-1}));
+        return () => { ctx.fillStyle="rgba(0,0,0,0.1)"; ctx.fillRect(0,0,w,h); b.forEach(p=>{
+            p.x+=p.vX; p.y+=p.vY; if(p.x<0||p.x>w)p.vX*=-1; if(p.y<0||p.y>h)p.vY*=-1;
+            ctx.fillStyle="#0f9"; ctx.fillRect(p.x,p.y,3,3);
+        }); };
+    }},
+    { name: "Neural Net", en: "Thought as a flash in the dark.", hk: "思想只係黑暗網絡入面嘅一點閃電。", code: (ctx, w, h) => {
+        let n=Array.from({length:30},()=>({x:Math.random()*w,y:Math.random()*h}));
+        return () => { ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,w,h);
+        let i=Math.floor(Math.random()*30), j=Math.floor(Math.random()*30);
+        ctx.strokeStyle="#0f9"; ctx.beginPath(); ctx.moveTo(n[i].x, n[i].y); ctx.lineTo(n[j].x, n[j].y); ctx.stroke(); };
+    }},
+    { name: "Pixel Noise", en: "The potential of chaos.", hk: "喺噪聲入面，我哋發現咗萬物嘅可能性。", code: (ctx, w, h) => {
+        return () => { for(let i=0;i<1000;i++){ ctx.fillStyle=`rgba(0,255,153,${Math.random()})`; ctx.fillRect(Math.random()*w, Math.random()*h, 2, 2); } };
+    }},
+    { name: "Voronoi", en: "How we divide our space.", hk: "我哋點樣分割空間，決定咗我哋嘅鄰居。", code: (ctx, w, h) => {
+        let p=Array.from({length:10},()=>({x:Math.random()*w,y:Math.random()*h,c:`hsl(${Math.random()*360},50%,50%)`}));
+        for(let x=0;x<w;x+=4) for(let y=0;y<h;y+=4){
+            let close=p[0], minDist=9999; p.forEach(pt=>{let d=Math.hypot(x-pt.x,y-pt.y); if(d<minDist){minDist=d; close=pt;}});
+            ctx.fillStyle=close.c; ctx.fillRect(x,y,4,4);
+        } return null;
+    }},
+    { name: "Warp Tunnel", en: "Breaking the flat screen.", hk: "突破平面屏幕嘅極限。", code: (ctx, w, h) => {
+        let t=0; return () => { ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h); ctx.translate(w/2,h/2);
+        for(let i=0;i<20;i++){ let r=(t+i*20)%400; ctx.strokeStyle="#0f9"; ctx.beginPath(); ctx.arc(0,0,r,0,7); ctx.stroke(); }
+        ctx.setTransform(1,0,0,1,0,0); t+=2; };
+    }}
 ];
 
-/**
- * ENGINE LOGIC
- */
 const canvas = document.getElementById('stage');
 const ctx = canvas.getContext('2d');
 const menu = document.getElementById('menu');
 const codeDisplay = document.getElementById('code-display');
+const meaningBox = document.getElementById('meaning-box');
 const consolePanel = document.getElementById('console');
 
-let currentAnimation = null;
+let currentAnim = null;
 
-function log(msg, type = 'info') {
-    const div = document.createElement('div');
-    div.className = `log-entry log-${type}`;
-    div.innerText = `> [${new Date().toLocaleTimeString()}] ${msg}`;
-    consolePanel.appendChild(div);
-    consolePanel.scrollTop = consolePanel.scrollHeight;
+function log(msg, type='sys') {
+    const d = document.createElement('div'); d.className = `log log-${type}`;
+    d.innerHTML = type==='sys' ? `[${new Date().toLocaleTimeString()}] > ${msg}` : msg;
+    consolePanel.appendChild(d); consolePanel.scrollTop = consolePanel.scrollHeight;
 }
 
-function resize() {
-    canvas.width = canvas.parentElement.clientWidth;
-    canvas.height = canvas.parentElement.clientHeight;
-}
+const asciiLogo = `
+  _  _  ____  ____    __    ____  ____ 
+ / )( \\(  __)(  _ \\  / _\\  / ___)(_  _)
+ ) __ ( ) _)  )   / /    \\ \\___ \\  )(  
+ \\_)(_/(____)(__\\_) \\_/\\_/ (____/ (__) 
+     CODE_ART_OS // LOAD_SEQUENCE_OK
+`;
 
-function loadExhibit(index) {
-    const ex = Exhibits[index];
-    log(`Loading exhibit: ${ex.name}...`);
-    
-    // UI Update
-    document.querySelectorAll('.nav-item').forEach((el, i) => {
-        el.className = i === index ? 'nav-item active' : 'nav-item';
-    });
-
-    // Code display
+function load(idx) {
+    const ex = Exhibits[idx];
+    document.querySelectorAll('.nav-item').forEach((b,i)=> b.className = i===idx ? 'nav-item active':'nav-item');
+    meaningBox.innerHTML = `<strong>EN:</strong> ${ex.en}<br><br><strong>粵語:</strong> ${ex.hk}`;
     codeDisplay.textContent = ex.code.toString();
-
-    // Reset Canvas and Animation
-    if (currentAnimation) cancelAnimationFrame(currentAnimation);
-    resize();
-    ctx.clearRect(0,0,canvas.width, canvas.height);
-
-    // Get the draw loop
+    if(currentAnim) cancelAnimationFrame(currentAnim);
+    canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight;
     const loop = ex.code(ctx, canvas.width, canvas.height);
-    
-    if (loop) {
-        function animate() {
-            loop();
-            currentAnimation = requestAnimationFrame(animate);
-        }
-        animate();
-        log(`Routine started.`);
-    } else {
-        log(`Static render completed.`);
-    }
+    log(`EXEC MODULE: ${ex.name}... SUCCESS.`);
+    if(loop) { const f = () => { loop(); currentAnim = requestAnimationFrame(f); }; f(); }
 }
 
-// Init Menu
 Exhibits.forEach((ex, i) => {
-    const btn = document.createElement('div');
-    btn.className = 'nav-item';
-    btn.innerHTML = `<span class="badge">0${i+1}</span> ${ex.name}`;
-    btn.onclick = () => loadExhibit(i);
-    menu.appendChild(btn);
+    const b = document.createElement('div'); b.className = 'nav-item';
+    b.innerHTML = `<span>${(i+1).toString().padStart(2,'0')}</span> <span>${ex.name}</span>`;
+    b.onclick = () => load(i); menu.appendChild(b);
 });
 
-window.addEventListener('resize', resize);
-// Start with first exhibit
-loadExhibit(0);
-
+log(asciiLogo, 'art');
+log("Initializing system kernel...");
+log("Memory allocated for visual buffers.");
+setTimeout(() => load(0), 500);
 </script>
 </body>
 </html>
